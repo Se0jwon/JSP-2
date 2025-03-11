@@ -2,11 +2,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JSP - Hello World</title>
+    <title>JSP - Hello World</title>
 </head>
 <body>
-<h1><%= "Hello World!" %></h1>
+<h1><%= "Hello World!" %>
+</h1>
 <br/>
 <a href="hello-servlet">Hello Servlet</a>
+<a href="ch08/calcForm.html">calcFrom</a>
+<a href="pcontrol">product List</a>\
+<a href="ch08/file.jsp">file up-download</a>
 </body>
 </html>
