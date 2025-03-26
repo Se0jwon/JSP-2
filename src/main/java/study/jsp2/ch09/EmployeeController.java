@@ -10,15 +10,15 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.io.IOException;
 
-@WebServlet("/studentControl")
-public class StudentController extends HttpServlet {
+@WebServlet("/employeeControl")
+public class EmployeeController extends HttpServlet {
 
-    StudentDAO studentDAO;
+    EmployeeDAO employeeDAO;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        studentDAO = new StudentDAO();
+        employeeDAO = new EmployeeDAO();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class StudentController extends HttpServlet {
         String view = "";
 
         if(action == null) {
-            getServletContext().getRequestDispatcher("/studentControl?action=list")
+            getServletContext().getRequestDispatcher("/employeeControl?action=list")
                     .forward(req, resp);
         } else {
             switch (action) {
@@ -41,20 +41,20 @@ public class StudentController extends HttpServlet {
     }
 
     public String list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("students", studentDAO.getAll());
-        return "studentInfo.jsp";
+        req.setAttribute("employees", employeeDAO.getAll());
+        return "employeeInfo.jsp";
     }
 
     public String insert(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Student student = new Student();
+        Employee employee = new Employee();
 
         try {
-            BeanUtils.populate(student, req.getParameterMap());
+            BeanUtils.populate(employee, req.getParameterMap());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        studentDAO.insert(student);
+        employeeDAO.insert(employee);
         return list(req, resp);
     }
 }

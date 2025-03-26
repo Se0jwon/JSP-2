@@ -12,5 +12,7 @@
 <a href="ch08/calcForm.html">calcFrom</a>
 <a href="pcontrol">product List</a>\
 <a href="ch08/file.jsp">file up-download</a>
+<a href="/studentControl">StudentInfo</a>
+<a href="/employeeControl">Employeeinfo</a>
 </body>
 </html>

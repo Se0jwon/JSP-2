@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentDAO {
+public class EmployeeDAO {
 
     Connection conn;
     PreparedStatement pstmt;
@@ -36,16 +36,13 @@ public class StudentDAO {
         }
     }
 
-    public void insert(Student student) {
+    public void insert(Employee employee) {
         open();
-        String sql = "insert into student(username, univ, birth, email) values(?,?,?,?)";
+        String sql = "insert into employee(name) values(?)";
 
         try {
              pstmt = conn.prepareStatement(sql);
-             pstmt.setString(1, student.getUsername());
-             pstmt.setString(2, student.getUniv());
-             pstmt.setDate(3, student.getBirth());
-             pstmt.setString(4, student.getEmail());
+             pstmt.setString(1, employee.getName());
 
              pstmt.executeUpdate();
         } catch (Exception e) {
@@ -55,25 +52,22 @@ public class StudentDAO {
         }
     }
 
-    public List<Student> getAll() {
+    public List<Employee> getAll() {
         open();
-        List<Student> students = new ArrayList<>();
+        List<Employee> employees = new ArrayList<>();
 
         try {
-            pstmt = conn.prepareStatement("select * from student");
+            pstmt = conn.prepareStatement("select * from employee");
             ResultSet rs = pstmt.executeQuery();
 
-            while (rs.next()) { // 다음 행이 있는 동안 반복
-                Student s = new Student(); // 새로운 Student 객체 생성
+            while (rs.next()) {
+                Employee employee = new Employee();
 
 
-                s.setId(rs.getInt("id"));
-                s.setUsername(rs.getString("username"));
-                s.setUniv(rs.getString("univ"));
-                s.setBirth(rs.getDate("birth"));
-                s.setEmail(rs.getString("email"));
+                employee.setId(rs.getInt("id"));
+                employee.setName(rs.getString("name"));
 
-                students.add(s); // 완성된 Student 객체를 리스트에 추가
+                employees.add(employee);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,6 +75,6 @@ public class StudentDAO {
             close();
         }
 
-        return students;
+        return employees;
     }
 }
