@@ -14,5 +14,6 @@
 <a href="ch08/file.jsp">file up-download</a>
 <a href="/studentControl">StudentInfo</a>
 <a href="/employeeControl">Employeeinfo</a>
+<a href="/news.nhn">News</a>
 </body>
 </html>
