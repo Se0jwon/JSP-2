@@ -9,6 +9,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import org.apache.commons.beanutils.BeanUtils;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 
@@ -29,48 +31,58 @@ public class NewsController extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("utf-8");
-
+        // 1. 파라미터 값 얻어오기
         String action = req.getParameter("action");
+
+        // 2. 파라미터가 없다면 listNews 반환
         if (action == null) {
             action = "listNews";
         }
+
 
         Method m;
         String view;
 
         try {
+            // 3. 이 클래스의 action 파라미터와 같은 이름을 가지고 request를 매개변수로 가진 메소드를 찾음 )
             m = this.getClass().getMethod(action, HttpServletRequest.class);
+            // 4. req를 넘기며 메소드 실행 후 view 값 받아옴
             view = (String) m.invoke(this, req);
         } catch (Exception e) {
             throw new ServletException(e);
         }
 
+        // 뷰가 있다면
         if (view != null) {
+            // 5. 데이터를 변경하는 redirect 요청이면 문자열에서 redirect 제외 후 리다이렉트
             if (view.startsWith("redirect:/")) {
-                String rview = view.substring("redirect:/".length());
-                resp.sendRedirect(rview);
+                resp.sendRedirect(view.substring("redirect:/".length()));
             } else {
+                // 6. 단순 조회라면 req, resp 담아서 보냄
                 req.getRequestDispatcher(view).forward(req, resp);
             }
         }
     }
 
+    // 뉴스 추가
     public String addNews(HttpServletRequest request){
+        // 1. 저장할 새로운 객체 생성
         News n = new News();
         try {
-            // 이미지 파일 저장
+            // 2. 이미지 파일 저장
             Part part = request.getPart("file");
             String fileName = getFilename(part);
             if (fileName != null && !fileName.isEmpty()) {
                 part.write(fileName);
             }
 
-            // 입력값을 News 객체로 매핑
-            org.apache.commons.beanutils.BeanUtils.populate(n, request.getParameterMap());
+            // 3. 입력값을 News 객체로 매핑
+            BeanUtils.populate(n, request.getParameterMap());
 
             // 이미지 파일 이름을 News 객체에도 저장
             n.setImg("/img/" + fileName);
 
+            // 4. DAO의 addNews 메소드 실행하여 뉴스 젖ㅇ
             newsDAO.addNews(n);
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,6 +91,7 @@ public class NewsController extends HttpServlet {
             return listNews(request);
         }
 
+        // 5. listNews로 리다이렉트
         return "redirect:/news.nhn?action=listNews";
     }
 
@@ -90,6 +103,18 @@ public class NewsController extends HttpServlet {
             e.printStackTrace();
             servletContext.log("뉴스 삭제 과정에서 문제 발생!!");
             request.setAttribute("error", "뉴스가 정상적으로 삭제되지 않았습니다!!");
+            return listNews(request);
+        }
+        return "redirect:/news.nhn?action=listNews";
+    }
+
+    public String delAllNews(HttpServletRequest request) {
+        try {
+            newsDAO.delAllNews();
+        } catch (Exception e) {
+            e.printStackTrace();
+            servletContext.log("뉴스 전체 삭제 실패", e);
+            request.setAttribute("error", "뉴스 전체 삭제에 실패했습니다.");
             return listNews(request);
         }
         return "redirect:/news.nhn?action=listNews";
@@ -117,18 +142,6 @@ public class NewsController extends HttpServlet {
             request.setAttribute("error", "뉴스 목록을 가져오는 데 실패했습니다.");
         }
         return "ch10/newsList.jsp";
-    }
-
-    public String delAllNews(HttpServletRequest request) {
-        try {
-            newsDAO.delAllNews();
-        } catch (Exception e) {
-            e.printStackTrace();
-            servletContext.log("뉴스 전체 삭제 실패", e);
-            request.setAttribute("error", "뉴스 전체 삭제에 실패했습니다.");
-            return listNews(request);
-        }
-        return "redirect:/news.nhn?action=listNews";
     }
 
     private String getFilename(Part part) {

@@ -27,7 +27,8 @@ public class EmployeeController extends HttpServlet {
         String view = "";
 
         if(action == null) {
-            getServletContext().getRequestDispatcher("/employeeControl?action=list")
+            getServletContext()
+                    .getRequestDispatcher("/employeeControl?action=list")
                     .forward(req, resp);
         } else {
             switch (action) {

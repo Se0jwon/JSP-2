@@ -1,7 +1,5 @@
 package study.jsp2.ch09;
 
-import java.sql.Date;
-
 public class Employee {
     private int id;
     private String name;

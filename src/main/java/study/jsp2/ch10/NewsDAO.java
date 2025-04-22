@@ -8,22 +8,20 @@ public class NewsDAO {
     final String JDBC_DRIVER = "org.h2.Driver";
     final String JDBC_URL = "jdbc:h2:tcp://localhost/~/news";
 
-    public Connection open() {
-        Connection conn = null;
+    public Connection open(){
+        Connection conn;
         try {
             Class.forName(JDBC_DRIVER);
             conn = DriverManager.getConnection(JDBC_URL, "sa", "");
 
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
+        } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
 
         return conn;
     }
 
-    public void addNews(News news) {
+    public void addNews(News news) throws SQLException {
         Connection conn = open();
 
         String sql = "insert into news(title, img, date, content) values (?, ?, CURRENT_TIMESTAMP(), ?)";
@@ -34,9 +32,8 @@ public class NewsDAO {
             pstmt.setString(2, news.getImg());
             pstmt.setString(3, news.getContent());
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
     public List<News> getAll() throws SQLException {
@@ -78,7 +75,6 @@ public class NewsDAO {
                 news.setImg(rs.getString("img"));
                 news.setDate(rs.getString("cdate"));
                 news.setContent(rs.getString("content"));
-
             }
         }
 

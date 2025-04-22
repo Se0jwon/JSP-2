@@ -23,21 +23,21 @@ public class StudentController extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Normalize null action to "list"
         String action = req.getParameter("action");
-        String view = "";
 
-        if(action == null) {
-            getServletContext().getRequestDispatcher("/studentControl?action=list")
-                    .forward(req, resp);
-        } else {
-            switch (action) {
-                case "list" -> view = list(req, resp);
-                case "insert" -> view = insert(req, resp);
-            }
-
-            getServletContext().getRequestDispatcher("/ch09/" + view)
-                    .forward(req, resp);
+        if (action == null) {
+            action = "list";
         }
+
+        String view = switch (action) {
+            case "insert" -> insert(req, resp);
+            default -> list(req, resp);
+        };
+
+        // Forward to the selected JSP
+        req.getRequestDispatcher("/ch09/" + view)
+            .forward(req, resp);
     }
 
     public String list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
