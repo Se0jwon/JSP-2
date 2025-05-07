@@ -6,13 +6,13 @@ import java.util.List;
 
 public class NewsDAO {
     final String JDBC_DRIVER = "org.h2.Driver";
-    final String JDBC_URL = "jdbc:h2:tcp://localhost/~/news";
+    final String JDBC_URL = "jdbc:h2:tcp://localhost/~/testdb";
 
     public Connection open(){
-        Connection conn;
+        Connection conn=null;
         try {
             Class.forName(JDBC_DRIVER);
-            conn = DriverManager.getConnection(JDBC_URL, "sa", "");
+            conn = DriverManager.getConnection(JDBC_URL, "sa", "1234");
 
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
@@ -40,7 +40,7 @@ public class NewsDAO {
         Connection conn = open();
         List<News> newsList = new ArrayList<>();
 
-        String sql = "select aid, title, date as cdate from news";
+        String sql = "select aid, title, date from news";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         ResultSet rs = pstmt.executeQuery();
 
@@ -49,7 +49,7 @@ public class NewsDAO {
                 News news = new News();
                 news.setAid(rs.getInt("aid"));
                 news.setTitle(rs.getString("title"));
-                news.setDate(rs.getString("cdate"));
+                news.setDate(rs.getString("date"));
 
                 newsList.add(news);
             }
@@ -62,7 +62,7 @@ public class NewsDAO {
         Connection conn = open();
         News news = null;
 
-        String sql = "SELECT aid, title, img, date AS cdate, content FROM news WHERE aid = ?";
+        String sql = "SELECT * from news WHERE aid = ?";
         PreparedStatement pstmt = conn.prepareStatement(sql);
         pstmt.setInt(1, aid);
         ResultSet rs = pstmt.executeQuery();
@@ -73,7 +73,7 @@ public class NewsDAO {
                 news.setAid(rs.getInt("aid"));
                 news.setTitle(rs.getString("title"));
                 news.setImg(rs.getString("img"));
-                news.setDate(rs.getString("cdate"));
+                news.setDate(rs.getString("date"));
                 news.setContent(rs.getString("content"));
             }
         }

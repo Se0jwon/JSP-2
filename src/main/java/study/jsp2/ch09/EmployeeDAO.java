@@ -13,7 +13,7 @@ public class EmployeeDAO {
     PreparedStatement pstmt;
 
     final String JDBC_DRIVER = "org.h2.Driver";
-    final String JDBC_URL = "jdbc:h2:tcp://localhost/~/jwbookdb";
+    final String JDBC_URL = "jdbc:h2:~/testdb";
 
     public void open() {
         try {

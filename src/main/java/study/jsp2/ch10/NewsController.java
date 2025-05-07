@@ -13,9 +13,10 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 @WebServlet("/news.nhn")
-@MultipartConfig(maxFileSize = 1024 * 1024 * 10, location = "/Users/wingwogus/IdeaProjects/JSP-2/src/main/webapp/img")
+@MultipartConfig(maxFileSize = 1024 * 1024 * 10, location = "/Users/jwo/IdeaProjects/JSP-2/src/main/webapp/img")
 public class NewsController extends HttpServlet {
 
     private NewsDAO newsDAO;
@@ -38,7 +39,6 @@ public class NewsController extends HttpServlet {
         if (action == null) {
             action = "listNews";
         }
-
 
         Method m;
         String view;
@@ -95,6 +95,8 @@ public class NewsController extends HttpServlet {
         return "redirect:/news.nhn?action=listNews";
     }
 
+//    뉴스 삭제
+
     public String deleteNews(HttpServletRequest request) {
         int aid = Integer.parseInt(request.getParameter("aid"));
         try {
@@ -107,6 +109,8 @@ public class NewsController extends HttpServlet {
         }
         return "redirect:/news.nhn?action=listNews";
     }
+
+//    전체 삭제
 
     public String delAllNews(HttpServletRequest request) {
         try {
@@ -134,8 +138,10 @@ public class NewsController extends HttpServlet {
     }
 
     public String listNews(HttpServletRequest request){
+        List<News> list;
         try {
-            request.setAttribute("newsList", newsDAO.getAll());
+            list = newsDAO.getAll();
+            request.setAttribute("newsList", list);
         } catch (Exception e) {
             e.printStackTrace();
             servletContext.log("뉴스 목록 가져오기 실패", e);
@@ -144,6 +150,7 @@ public class NewsController extends HttpServlet {
         return "ch10/newsList.jsp";
     }
 
+//    업로드된 파일의 이름을 추출하는 메소드
     private String getFilename(Part part) {
         String contentDisposition = part.getHeader("Content-Disposition");
         for (String token : contentDisposition.split(";")) {
@@ -154,4 +161,16 @@ public class NewsController extends HttpServlet {
         return null;
     }
 
+    public String login(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        String pw = request.getParameter("password");
+
+        if ("jwbook".equals(id) && "1234".equals(pw)) {
+            request.getSession().setAttribute("authenticated", true);
+            return "redirect:/news.nhn?action=listNews";
+        } else {
+            request.setAttribute("error", "아이디 또는 비밀번호가 잘못되었습니다.");
+            return "ch10/login.jsp";
+        }
+    }
 }

@@ -1,13 +1,5 @@
-
-<%--
-  Created by IntelliJ IDEA.
-  User: wingw
-  Date: 2025-03-11
-  Time: 오후 11:22
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <html>
 <head>
     <title>상품 목록</title>
@@ -24,9 +16,9 @@
 
     <c:forEach var="p" varStatus="i" items="${products}">
         <tr>
-          <td>${i.count}</td>
-          <td><a href="/pcontrol?action=info&id=${p.id}">${p.name}</a></td>
-          <td>${p.price}</td>
+            <td>${i.count}</td>
+            <td><a href="/pcontrol?action=info&id=${p.id}">${p.name}</a></td>
+            <td>${p.price}</td>
         </tr>
     </c:forEach>
 

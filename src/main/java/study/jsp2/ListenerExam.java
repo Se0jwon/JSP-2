@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpSessionListener;
 public class ListenerExam implements ServletContextListener, ServletContextAttributeListener
         , HttpSessionListener, HttpSessionAttributeListener {
     public ListenerExam() {
-
     }
     @Override
     // ServletContext 시작

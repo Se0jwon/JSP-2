@@ -34,6 +34,6 @@ public class CalcController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+        doGet(req, resp); // POST도 GET처럼 처리
     }
 }
